@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<!-- This is a generated file. Do not edit. -->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Template for lecture slides</title>
+
+        <meta name="description" content="Template for lecture slides of NCSU OSGeoREL courses">
+        <meta name="author" content="Vaclav Petras">
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/ncsu-geoforall-lab.css" id="theme">
+
+        <!-- For syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+        <!-- For chalkboard plugin -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+        <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+
+        <style>
+            body {
+                background-image: url("../img/header.svg");
+                background-repeat: repeat-x;
+                background-position: left bottom;
+                background-size: auto 10%;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+<section>
+    <h2>How to make your research reproducible</h2>
+    <h3 style="margin-top: 0.5em">
+        Vaclav Petras</h3>
+    <p class="title-foot">
+        <a href="http://www.ncsu.edu/" title="North Carolina State University">NCSU</a>
+        <a href="http://geospatial.ncsu.edu/osgeorel/" title="NCSU OSGeo Research and Education Laboratory">OSGeoREL</a>
+        at
+        <a href="http://geospatial.ncsu.edu/" title="Center for Geospatial Analytics">Center for Geospatial Analytics</a>
+        <br>
+    </p>
+    <p>
+        US-IALE, Baltimore<br>
+        April 9-13, 2017
+    </p>
+</section>
+
+
+<section>
+<h2>Scientists rely on software</h2>
+    <blockquote style="width: 100%; margin: 0.1em;">
+        <p>
+            It's impossible to conduct research without software,
+            say 7 out of 10 UK researchers
+        </p>
+        <p>
+            <!-- &mdash; Simon Hettrick -->
+            &mdash; Hettrick et al, UK Research Software Survey 2014
+        </p>
+    </blockquote>
+<!--
+<small>92% of academics use research software</small>
+https://www.software.ac.uk/blog/2016-09-12-its-impossible-conduct-research-without-software-say-7-out-10-uk-researchers
+-->
+</section>
+
+
+<section>
+scientific community we have been largely unsuccessful in sharing our research methods and results in a reproducible way.
+</section>
+
+
+<section>
+current scientific publishing requires more than writing a paper
+new ways of sharing our research
+
+    <blockquote style="width: 100%; margin: 0.1em;">
+        <p>
+            Software [...] developed as part of novel methods is as important
+            for the method's implementation [...]
+            Such software [...] must be made available to readers upon publication.
+        </p>
+        <p>
+            &mdash;Nature Methods - 4, 189 (2007)
+        </p>
+    </blockquote>
+</section>
+
+
+<section>
+Software solutions for software problem
+</section>
+
+
+<section>
+<h2>Screenshots</h2>
+<img src="img/screenshot.png" class="stretch">
+<!--Czech localization of MS Excel has function names in Czech-->
+</section>
+
+<section>
+<h2>Scripting</h2>
+
+Bash:
+<pre class="bash" style="font-size: x-large;"><code>r.in.lidar input=points.las output=elevation -e
+</code></pre>
+Python:
+<pre class="python" style="font-size: x-large;"><code>from grass.script import run_command
+run_command("r.in.lidar", input="points.las", output="elevation", flags="e")
+</code></pre>
+R:
+<pre class="python" style="font-size: x-large;"><code>library(rgrass7)
+execGRASS("r.in.lidar", input="points.las", output="elevation", flags="e")
+</code></pre>
+<!--
+We can use Python and other languages to access powerful software features in an automated way instead
+of hoping we entered the same values as last time when rerunning the analysis with a new climate dataset.
+-->
+</section>
+
+
+<section>
+<h2>Jupyter Notebook</h2>
+<ul>
+    <li>interactive document with text, code, and figures
+</ul>
+<img src="img/jupyter.png" class="stretch">
+<!-- Jupyter and R Markdown let us track the reasoning behind our experiments and analyses. -->
+</section>
+
+
+<section>
+<h2>Revision control</h2>
+Git
+
+<!--
+collaborate and keep track
+of our constantly evolving methods and R scripts.
+-->
+</section>
+
+
+<section>
+Finally Docker and Vagrant let us wrap entire workflow into one runtime environment
+so that our species distribution model can be used without our personal laptop.
+</section>
+
+
+<section>
+This talk will discuss several tools for reproducible research
+and show practical examples which will make your life and lives of your colleagues easier.
+</section>
+
+
+<section>
+A terrain modeling paper will serve as an example of sharing a full description
+of a published method.
+A landscape change model will be used to demonstrate reusable research.
+Finally, a paper about vegetation structure will show how all pieces
+of the puzzle fit together.
+</section>
+
+<section>
+<h2>Tools for open geospatial science</h2>
+<ul>
+    <li>open science course, fall 2017
+</ul>
+<br>
+<img src="../img/gear_wheel.png" class="stretch">
+<!-- Jupyter and R Markdown let us track the reasoning behind our experiments and analyses. -->
+</section>
+<!-- This is a generated file. Do not edit. -->
+        </div>  <!-- slides -->
+
+    </div>  <!-- reveal -->
+
+    <!--<img class="timeline" id="line" />-->
+
+    <!--
+        Home button or link to a parent page
+        If you want this to be unique for every page (slide deck),
+        then remove it from here and put it at the end of each
+        file (or series of files) creating one page
+        (the position will be little different)
+        TODO: some JS is needed to move it to the right position
+    -->
+    <div class="parent-page">
+        <!-- alternative symbol: &#x1f3e0; -->
+        <a href="https://github.com/ncsu-osgeorel/lecture-slides-template" title="Go to the repository">&#8962;</a>
+    </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                // Display controls in the bottom right corner
+                controls: false,
+
+                // Display a presentation progress bar
+                progress: true,
+                
+                center: true,
+                
+                // Display the page number of the current slide
+                slideNumber: false,
+
+                // Enable the slide overview mode
+                overview: true,
+
+                // Turns fragments on and off globally
+                fragments: true,
+
+                // The "normal" size of the presentation, aspect ratio will be preserved
+                // when the presentation is scaled to fit different resolutions. Can be
+                // specified using percentage units.
+                // width: 960,
+                // height: 700,
+                
+                // Factor of the display size that should remain empty around the content
+                margin: 0.05,  // increase?
+
+                // Bounds for smallest/largest possible scale to apply to content
+                minScale: 0.5,
+                maxScale: 5.0,
+
+                theme: Reveal.getQueryHash().theme,  // available themes are in /css/theme
+                transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+                // Push each slide change to the browser history
+                history: true,
+                // Enable keyboard shortcuts for navigation
+                keyboard: true,
+
+                // Vertical centering of slides
+                center: true,
+
+                // Enables touch navigation on devices with touch input
+                touch: true,
+
+                // Loop the presentation
+                loop: false,
+                // Flags if the presentation is running in an embedded mode,
+                // i.e. contained within a limited portion of the screen
+                embedded: false,
+
+                // Number of milliseconds between automatically proceeding to the
+                // next slide, disabled when set to 0, this value can be overwritten
+                // by using a data-autoslide attribute on your slides
+                autoSlide: 0,
+
+                // Stop auto-sliding after user input
+                autoSlideStoppable: true,
+
+                // Enable slide navigation via mouse wheel
+                mouseWheel: false,
+
+                // Hides the address bar on mobile devices
+                hideAddressBar: true,
+
+                // Opens links in an iframe preview overlay
+                previewLinks: false,
+
+                // Transition speed
+                transitionSpeed: 'default', // default/fast/slow
+
+                // Transition style for full page slide backgrounds
+                backgroundTransition: 'none', // default/none/slide/concave/convex/zoom
+
+                // Number of slides away from the current that are visible
+                viewDistance: 3,
+
+                // Parallax background image
+                //parallaxBackgroundImage: '', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+                // Parallax background size
+                //parallaxBackgroundSize: '' // CSS syntax, e.g. "2100px 900px"
+                chalkboard: { 
+        		// optionally load pre-recorded chalkboard drawing from file
+            		src: "chalkboard.json",
+            	},
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+                    /* { src: 'plugin/math/math.js', async: true }, */
+                    { src: 'plugin/chalkboard/chalkboard.js' }
+                ],
+                keyboard: {
+            	    67: function() { RevealChalkboard.toggleNotesCanvas() },	// toggle notes canvas when 'c' is pressed
+            	    66: function() { RevealChalkboard.toggleChalkboard() },	// toggle chalkboard when 'b' is pressed
+            	    46: function() { RevealChalkboard.clear() },	// clear chalkboard when 'DEL' is pressed
+            	     8: function() { RevealChalkboard.reset() },	// reset chalkboard data on current slide when 'BACKSPACE' is pressed
+            	    68: function() { RevealChalkboard.download() },	// downlad recorded chalkboard drawing when 'd' is pressed
+            	},
+            });
+
+        </script>
+
+    </body>
+</html>
