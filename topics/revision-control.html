@@ -32,6 +32,51 @@
 <main>
 <!-- This is a generated file. Do not edit. -->
 <h1 id="revision-control-systems-and-wiki-technologies">Revision control systems and wiki technologies</h1>
+<h2 id="git">Git</h2>
+<p>Git is a revision (version) control system. Git is free and open source software:</p>
+<blockquote>
+<p>Git is released under the GNU General Public License version 2.0, which is an open source license. The Git project chose to use GPLv2 to guarantee your freedom to share and change free software-to make sure the software is free for all its users.</p>
+</blockquote>
+<p>Install Git on your computer. You can obtain the instructions and download file on the official Git website:</p>
+<p><a href="https://git-scm.com/" class="uri">https://git-scm.com/</a></p>
+<h2 id="using-overleaf-with-git">Using Overleaf with Git</h2>
+<p>You will need some experimental document in Overleaf (i.e. some document which is yours only and you can break it). Go to this document and go to <em>Share</em> and use the <em>Clone With Git</em> option. Use this in your local Git installation to clone the repository. In command line, the operation looks like:</p>
+<pre><code>git clone https://git.overleaf.com/somehash</code></pre>
+<p>Make some changes in the main TeX file (<code>main.tex</code>) using a text editor. Now let's see the status of the repository:</p>
+<pre><code>git status</code></pre>
+<p>This should show that one file was modified. Let's see what are the changes:</p>
+<pre><code>git diff</code></pre>
+<p>This showed the changes line by line. For text, it might be good to see changes word by word:</p>
+<pre><code>git diff --word-diff</code></pre>
+<p>After reviewing the changes, tell Git to record the current state using <code>git commit</code>. Specify also the message to describe the changes:</p>
+<pre><code>git commit -am &quot;a test change&quot;</code></pre>
+<p>No let's put the these changes to Overleaf using:</p>
+<pre><code>git push</code></pre>
+<p>Now check if you see the changes you made in Overleaf. Then make some changes in Overleaf and get them synchronized to your computer:</p>
+<pre><code>git pull</code></pre>
+<h2 id="starting-with-repository-on-your-computer">Starting with repository on your computer</h2>
+<p>Create a new empty directory and navigate your command line to it. Then initialize a Git repository there:</p>
+<pre><code>git init</code></pre>
+<p>Create a new plain text file using your text editor. Put there few lines of text. Once you created a new file, you have to tell Git to start tracking it:</p>
+<pre><code>git add some_file.txt</code></pre>
+<p>To see what files where changed, added or deleted use:</p>
+<pre><code>git status</code></pre>
+<p>Now commit the changes:</p>
+<pre><code>git commit -am &quot;a file with trivial content&quot;</code></pre>
+<p>Now do some changes in the file; add some lines, remove some lines, and edit some lines. To review the changes in the files use:</p>
+<pre><code>git diff</code></pre>
+<p>Now again commit the changes:</p>
+<pre><code>git commit -am &quot;a file with trivial content&quot;</code></pre>
+<p>Let's review the states we have recorded:</p>
+<pre><code>git log</code></pre>
+<p>The are GUIs for this, but depending on the occasion we may want to use some command line parameters to get a differently formated revision tree in the command line, for example:</p>
+<pre><code>git log --oneline --graph --decorate --all</code></pre>
+<h2 id="branches-in-git">Branches in Git</h2>
+<p>So far we were working in a single branch called <code>master</code>. Now we will create a new branch. This can be done using <code>git branch</code> and then you would switch to the newly created branch using <code>git checkout</code>. Usually this is done together in one command:</p>
+<pre><code>git checkout -b experiment</code></pre>
+<p>Now we have a branch called <code>experiment</code> and we are currently in it. In other words, the <code>experiment</code> branch is active now.</p>
+<h2 id="software-licenses">Software licenses</h2>
+<p><a href="https://choosealicense.com/" class="uri">https://choosealicense.com/</a></p>
 <h2 id="resources">Resources</h2>
 <h3 id="texts">Texts</h3>
 <ul>
@@ -43,6 +88,13 @@
 <li><a href="https://www.youtube.com/watch?v=HVsySz-h9r4">Git Tutorial for Beginners: Command-Line Fundamentals</a> by Corey Schafer (2015)</li>
 <li><a href="https://www.youtube.com/watch?v=SWYqp7iY_Tchttps://www.youtube.com/watch?v=SWYqp7iY_Tc">Git &amp; GitHub Crash Course For Beginners</a> by Brad Traversy (2017)</li>
 <li><a href="https://www.youtube.com/playlist?list=PLWKjhJtqVAbkFiqHnNaxpOPhh9tSWMXIF">Git &amp; GitHub (intermixed)</a> by freeCodeCamp (playlist)</li>
+</ul>
+<h3 id="documentation">Documentation</h3>
+<ul>
+<li><a href="http://git-scm.com/doc">Git documentation</a></li>
+<li><a href="http://git-scm.com/book">Pro Git book</a></li>
+<li><a href="https://help.github.com">GitHub documentation</a></li>
+<li><a href="https://try.github.io">Try Git online</a></li>
 </ul>
 <h2 id="assignment">Assignment</h2>
 <p>The assignment has four parts. First, install Git on your computer.</p>
