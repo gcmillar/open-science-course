@@ -75,6 +75,18 @@
 <p>So far we were working in a single branch called <code>master</code>. Now we will create a new branch. This can be done using <code>git branch</code> and then you would switch to the newly created branch using <code>git checkout</code>. Usually this is done together in one command:</p>
 <pre><code>git checkout -b experiment</code></pre>
 <p>Now we have a branch called <code>experiment</code> and we are currently in it. In other words, the <code>experiment</code> branch is active now.</p>
+<h2 id="submitting-changes-to-a-project">Submitting changes to a project</h2>
+<p>You can submit a patch (aka diff) as a file.</p>
+<p>You can submit a pull request.</p>
+<p>You have two options how to submit a change to the code in the repository. You can submit a patch (aka diff) as a file or you can submit a pull request.</p>
+<p>Before you submit a change, check the existing issues and pull requirests if they don't already make the change you are submitting.</p>
+<p>## Open an issue (bug report) with patch</p>
+<p>Clone this repository, make changes and then do (assuming unix-like command line, i.e. Git Bash on Windows):</p>
+<blockquote>
+<p>git diff &gt; your_additons.diff</p>
+</blockquote>
+<p>Then open a new issue and add this</p>
+<p>You can choose from two options how to do that.</p>
 <h2 id="software-licenses">Software licenses</h2>
 <p><a href="https://choosealicense.com/" class="uri">https://choosealicense.com/</a></p>
 <h2 id="resources">Resources</h2>
@@ -100,12 +112,10 @@
 <p>The assignment has four parts. First, install Git on your computer.</p>
 <p>Second, go to your document in Overleaf from the last assignment or create some other test document in Overleaf. Go to <em>Share</em> and use the <em>Clone With Git</em> option. Use this in your local Git installation to clone the repository. In command line, the operation looks something like:</p>
 <pre><code>git clone https://git.overleaf.com/somehash</code></pre>
-<p>Make some changes, commit, push, and see what happened in Overleaf. Then make some changes in Overleaf and then pull in your desktop installation. You can repeat that so you feel comfortable.</p>
-<p>Third, create a repository on GitHub, GitLab, Bitbucket, or some other Git service. The will be a guide, wizard, or form which will lead you through it. Then clone the repository on your computer and do some commits. Again, you can repeat that so you feel comfortable.</p>
-<p>Fourth, submit changes to some repository which is not yours. For this we will use GitHub, but the workflow would be similar in other cases as well. You can choose from two options how to do that. Different projects prefer one or the other. We will use the following repository as the repository we are trying to submit changes to.</p>
-<p>URL to be added</p>
-<p>You can submit a patch (aka diff) as a file.</p>
-<p>You can submit a pull request.</p>
+<p>Make some changes, commit, push, and see what happened in Overleaf. Then make some changes in Overleaf and then pull into your desktop installation. You can repeat that so you feel comfortable.</p>
+<p>Third, create a repository on GitHub, GitLab, Bitbucket, or some other Git service. You will need to create an account. There will be a guide, wizard, or form which will lead you through everything. Once you have a repository there, clone the repository on your computer and do some commits. Push the changes to the remote repository and inspect them online. You can also make some changes online if that's possible (like in case of GitHub) and pull the changes to your local repository. Again, you can repeat that so you feel comfortable.</p>
+<p>Fourth, submit changes to some repository which is not yours. For this we will use GitHub, but the workflow would be similar in other cases as well. However, different projects prefer different practices and it is best to check guidelines for contributing. These are often in a file called something like <code>CONTRIBUTING</code>. We will use the following repository as the repository we are trying to submit changes to. (Tip: Check CONTRIBUTING.md.)</p>
+<p><a href="https://github.com/wenzeslaus/test-repository-for-open-science-class" class="uri">https://github.com/wenzeslaus/test-repository-for-open-science-class</a></p>
 
 </main>
 
