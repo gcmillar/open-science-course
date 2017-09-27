@@ -94,6 +94,14 @@ file ned.png</code></pre>
 gdal_translate -of PNG -scale -co worldfile=yes $1 $2</code></pre>
 <pre><code>gdalwarp -tr 300 300 -r cubic -co &quot;TFW=YES&quot; -overwrite ncrast/elev_ned_30m.tif srtm_300.tif</code></pre>
 <pre><code>convert srtm_*.png -resize 500x -delay 100 srtm.gif</code></pre>
+<pre><code>ipython</code></pre>
+<pre><code>from osgeo import ogr</code></pre>
+<pre><code>point = ogr.Geometry(ogr.wkbPoint25D)
+point.AddPoint(610920, 196552, 320)</code></pre>
+<pre><code>print point</code></pre>
+<pre><code>point.ExportToJson()</code></pre>
+<pre><code>buffer = point.Buffer(200)</code></pre>
+<pre><code>buffer.ExportToJson()</code></pre>
 <h2 id="resources">Resources</h2>
 <h3 id="texts">Texts</h3>
 <ul>
