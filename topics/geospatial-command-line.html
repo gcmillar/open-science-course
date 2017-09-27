@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>NCSU GIS 610-003/603: Tools for open geospatial science</title>
+
+<link rel="shortcut icon" href="../img/favicon.png" />
+
+<link href="../layout.css" rel="stylesheet" type="text/css" media="screen">
+<link href="../style.css" rel="stylesheet" type="text/css" media="screen">
+
+</head>
+
+<body>
+
+<div id="outercontainer">
+<div id="container">
+
+<header>
+<div id="header-image">
+</div>
+
+<nav>
+<ul class="nav">
+<li><a href="../index.html">Syllabus</a></li>
+<li><a href="../index.html#schedule">Schedule</a></li>
+</ul>
+</nav>
+
+</header>
+
+<main>
+<!-- This is a generated file. Do not edit. -->
+<h1 id="command-line-and-python-tools-for-geospatial-work">Command line and Python tools for geospatial work</h1>
+<p>Install:</p>
+<pre><code>sudo apt install gdal-bin
+sudo apt install python-gdal ipython imagemagick</code></pre>
+<p>Download data:</p>
+<pre><code>wget https://www.grassbook.org/wp-content/uploads/data_extra/o35078g6_NC.tif.gz</code></pre>
+<p>Unpack (GZIP format):</p>
+<pre><code>gunzip o35078g6_NC.tif.gz</code></pre>
+<p>Get info:</p>
+<pre><code>gdalinfo o35078g6_NC.tif</code></pre>
+<p>Get just first part:</p>
+<pre><code>gdalinfo o35078g6_NC.tif | head</code></pre>
+<p>Get little more:</p>
+<pre><code>gdalinfo o35078g6_NC.tif | head -n 50</code></pre>
+<p>Browser through all:</p>
+<pre><code>gdalinfo o35078g6_NC.tif | less</code></pre>
+<p>See if there is some option for getting just the basic info:</p>
+<pre><code>man gdalinfo</code></pre>
+<p>Disable printing color table and raster attribute table:</p>
+<pre><code>gdalinfo -noct -norat o35078g6_NC.tif</code></pre>
+<p>Get more data:</p>
+<pre><code>wget http://grass.osgeo.org/sampledata/north_carolina/nc_rast_geotiff.tar.gz
+wget http://grass.osgeo.org/sampledata/north_carolina/nc_shape.tar.gz</code></pre>
+<p>Unpack the data (TAR.GZ format):</p>
+<pre><code>tar xvf nc_rast_geotiff.tar.gz
+tar xvf nc_shape.tar.gz</code></pre>
+<p>Get info:</p>
+<pre><code>ogrinfo -so ncshape/lakes.shp lakes</code></pre>
+<p>Rasterize the vector:</p>
+<pre><code>gdal_rasterize -burn 100 -te 610760 196084 677119 258303 -tr 100 100 -l lakes ncshape/lakes.shp lakes.tif</code></pre>
+<p>Convert TIFF to PNG for visualization using ImageMagick):</p>
+<pre><code>convert lakes.tif lakes.png</code></pre>
+<p>Show PNG using Eye of GNOME:</p>
+<pre><code>eog lakes.png</code></pre>
+<pre><code>ogrinfo -so ncshape/lakes.shp lakes | grep Extent:</code></pre>
+<p>filter_numbers.py</p>
+<pre><code>#!/usr/bin/env python
+
+import fileinput
+
+for line in fileinput.input():
+    print(line
+          .replace(&quot;Extent: &quot;, &quot;&quot;)
+          .replace(&quot;(&quot;, &quot;&quot;)
+          .replace(&quot;)&quot;, &quot;&quot;)
+          .replace(&quot;,&quot;, &quot;&quot;)
+          .replace(&quot;- &quot;, &quot;&quot;)
+          )</code></pre>
+<pre><code>ogrinfo -so ncshape/lakes.shp lakes | grep Extent: | python filter_numbers.py</code></pre>
+<pre><code>chmod u+x filter_numbers.py</code></pre>
+<pre><code>ogrinfo -so ncshape/lakes.shp lakes | grep Extent: | ./filter_numbers.py</code></pre>
+<pre><code>gdal_rasterize -burn 100 \
+    -te $(ogrinfo -so ncshape/lakes.shp lakes | grep Extent: | python filter_numbers.py) \
+    -tr 100 100 -l lakes ncshape/lakes.shp lakes.tif</code></pre>
+<pre><code>gdal_translate -of PNG -scale -co worldfile=yes ncrast/elev_ned_30m.tif ned.png</code></pre>
+<pre><code>file ncrast/elev_ned_30m.tif
+file ned.png</code></pre>
+<p>tif2png.sh:</p>
+<pre><code>#!/bin/bash
+
+gdal_translate -of PNG -scale -co worldfile=yes $1 $2</code></pre>
+<pre><code>gdalwarp -tr 300 300 -r cubic -co &quot;TFW=YES&quot; -overwrite ncrast/elev_ned_30m.tif srtm_300.tif</code></pre>
+<pre><code>convert srtm_*.png -resize 500x -delay 100 srtm.gif</code></pre>
+<h2 id="resources">Resources</h2>
+<h3 id="texts">Texts</h3>
+<ul>
+<li><a href="http://spatial-ecology.net/dokuwiki/doku.php?id=wiki:gdal">GDAL at Spatial Ecology</a> (collection of tutorials)</li>
+<li><a href="http://spatial-ecology.net/dokuwiki/doku.php?id=wiki:pk_tools">pktools at Spatial Ecology</a> (collection of tutorials)</li>
+<li><a href="https://pcjericks.github.io/py-gdalogr-cookbook/">Python GDAL/OGR Cookbook</a></li>
+</ul>
+<h3 id="videos">Videos</h3>
+<h2 id="assignment">Assignment</h2>
+
+</main>
+
+<footer>
+
+<nav>
+<ul>
+<li>
+    <li><a class="term-changes" href="https://moodle-courses1718.wolfware.ncsu.edu/course/view.php?id=1806">Moodle site</a></li>
+    <li><a href="http://help.ncsu.edu/">Computing Help</a></li>
+    <li><a href="http://geospatial.ncsu.edu/">GIST Home</a></li>
+    <li><a href="http://www.ncsu.edu/policies/prr-disclaimer.php">Disclaimer</a></li>
+    <li><a href="http://oit.ncsu.edu/itaccess">Accessibility</a></li>
+    <a href="https://github.com/ncsu-geoforall-lab/open-science-course" title="Fork on GitHub" alt="octocat">
+        <img src="../img/github_logo.png">
+    </a>
+</li>
+<li title="Copyright and license (not applicable to linked materials)">
+    &copy; 2015
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a>
+    <a href="http://geospatial.ncsu.edu/osgeorel/">NCSU GeoForAll Lab</a>
+</li>
+</ul>
+</nav>
+
+</footer>
+
+</div>
+</div>
+
+</body>
+</html>
