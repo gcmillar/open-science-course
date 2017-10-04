@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>NCSU GIS 610-003/603: Tools for open geospatial science</title>
+
+<link rel="shortcut icon" href="img/favicon.png" />
+
+<link href="layout.css" rel="stylesheet" type="text/css" media="screen">
+<link href="style.css" rel="stylesheet" type="text/css" media="screen">
+
+</head>
+
+<body>
+
+<div id="outercontainer">
+<div id="container">
+
+<header>
+<div id="header-image">
+</div>
+
+<nav>
+<ul class="nav">
+<li><a href="index.html">Syllabus</a></li>
+<li><a href="index.html#schedule">Schedule</a></li>
+</ul>
+</nav>
+
+</header>
+
+<main>
+<!-- This is a generated file. Do not edit. -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple raster and vector</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.3.4/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.3.4/build/ol.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
+  </head>
+  <body>
+    <div id="map" class="map"></div>
+    <script>
+      var vectorSource = new ol.source.Vector({
+        format: new ol.format.GeoJSON(),
+        url: 'nc_state.geojson',
+        attributions: "NC Boundary: Neteler &amp; Mitasova 2008"
+      });
+      var vectorLayer = new ol.layer.Vector({
+        source: vectorSource
+      });
+
+      var imageExtent = [-84.4223856,  33.4882788, -75.0518788,  36.6207207];
+      rasterLayer = new ol.layer.Image({
+            source: new ol.source.ImageStatic({
+              url: 'elev_state_500m.png',
+              crossOrigin: '',
+              projection: 'CRS:84',
+              imageExtent: imageExtent,
+              attributions: "NC Elevation: Neteler &amp; Mitasova 2008"
+            })});
+
+      var map = new ol.Map({
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          }),
+          rasterLayer,
+          vectorLayer
+        ],
+        target: 'map',
+        controls: ol.control.defaults({
+          attributionOptions: ({
+            collapsible: false
+          })
+        }),
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 2
+        })
+      });
+    </script>
+  </body>
+</html>
+
+</main>
+
+<footer>
+
+<nav>
+<ul>
+<li>
+    <li><a class="term-changes" href="https://moodle-courses1718.wolfware.ncsu.edu/course/view.php?id=1806">Moodle site</a></li>
+    <li><a href="http://help.ncsu.edu/">Computing Help</a></li>
+    <li><a href="http://geospatial.ncsu.edu/">GIST Home</a></li>
+    <li><a href="http://www.ncsu.edu/policies/prr-disclaimer.php">Disclaimer</a></li>
+    <li><a href="http://oit.ncsu.edu/itaccess">Accessibility</a></li>
+    <a href="https://github.com/ncsu-geoforall-lab/open-science-course" title="Fork on GitHub" alt="octocat">
+        <img src="img/github_logo.png">
+    </a>
+</li>
+<li title="Copyright and license (not applicable to linked materials)">
+    &copy; 2015
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a>
+    <a href="http://geospatial.ncsu.edu/osgeorel/">NCSU GeoForAll Lab</a>
+</li>
+</ul>
+</nav>
+
+</footer>
+
+</div>
+</div>
+
+</body>
+</html>

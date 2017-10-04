@@ -32,7 +32,106 @@
 <main>
 <!-- This is a generated file. Do not edit. -->
 <h1 id="publishing-data-on-web">Publishing data on web</h1>
-<p><a href="https://intercom.help/authorea/host-data" class="uri">https://intercom.help/authorea/host-data</a></p>
+<p>Install GDAL and <em>jq</em> (command for Ubuntu):</p>
+<pre><code>sudo apt install gdal-bin jq</code></pre>
+<pre><code>ogr2ogr -f GeoJSON -t_srs crs:84 nc_state.geojson ncshape/nc_state.shp</code></pre>
+<pre><code>gdalinfo elev_state_500m.png</code></pre>
+<pre><code>gdalinfo -json elev_state_500m.png | jq .cornerCoordinates | \
+    jq &quot;.lowerLeft, .upperRight&quot; | \
+    tr &quot;\n&quot; &quot; &quot; | sed -e &quot;s/\] \[/,/g&quot; | tr -s &quot; &quot;</code></pre>
+<pre><code>gdalinfo -json elev_state_500m.png | \
+    jq -c &quot;.cornerCoordinates | [.lowerLeft[], .upperRight[]] &quot; | \
+    sed &quot;s/,/, /g&quot;</code></pre>
+<pre><code>gdalwarp -of VRT -r average -t_srs crs:84 ncrast/elev_state_500m.tif elev_state_500m.vrt
+gdal_translate -of PNG elev_state_500m.vrt elev_state_500m.png</code></pre>
+<pre><code>gdalinfo elev_state_500m.png</code></pre>
+<p>Firefox <a href="https://developer.mozilla.org/en-US/docs/Same-origin_policy_for_file:_URIs">policy</a> allows for a local file in the same directory to be loaded. Chrome and Chromium require a special command line option (replace <code>chromium-browser</code> by <code>chrome</code> or path to it if needed):</p>
+<pre><code>chromium-browser --disable-web-security --user-data-dir</code></pre>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;OpenLayers simple raster and vector&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://openlayers.org/en/v4.3.4/css/ol.css&quot; type=&quot;text/css&quot;&gt;
+    &lt;!-- The line below is only needed for old environments like Internet Explorer and Android 4.x --&gt;
+    &lt;script src=&quot;https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://openlayers.org/en/v4.3.4/build/ol.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;
+    &lt;script&gt;
+        /* JavaScript goes here */
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<pre><code>var map = new ol.Map({
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.OSM()
+    })
+  ],
+  target: &#39;map&#39;,
+  controls: ol.control.defaults({
+      attributionOptions: ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
+    projection: &#39;EPSG:4326&#39;,
+    center: [0, 0],
+    zoom: 2
+  })
+});</code></pre>
+<pre><code>var vectorSource = new ol.source.Vector({
+  format: new ol.format.GeoJSON(),
+  url: &#39;nc_state.geojson&#39;,
+  attributions: &quot;NC Boundary: Neteler &amp;amp; Mitasova 2008&quot;
+});
+var vectorLayer = new ol.layer.Vector({
+  source: vectorSource
+});</code></pre>
+<pre><code>var imageExtent = [-84.4223856,  33.4882788, -75.0518788,  36.6207207];
+rasterLayer = new ol.layer.Image({
+      source: new ol.source.ImageStatic({
+        url: &#39;elev_state_500m.png&#39;,
+        crossOrigin: &#39;&#39;,
+        projection: &#39;CRS:84&#39;,
+        imageExtent: imageExtent,
+        attributions: &quot;NC Elevation: Neteler &amp;amp; Mitasova 2008&quot;
+      })});</code></pre>
+<pre><code>var map = new ol.Map({
+    layers: [
+      new ol.layer.Tile({
+        source: new ol.source.OSM()
+      }),
+      rasterLayer,
+      vectorLayer
+    ],</code></pre>
+<p>See the complete web page <a href="../resources/openlayers_raster_and_vector.html">here</a>.</p>
+<p>Install Git (command for Ubuntu):</p>
+<pre><code>sudo apt install git</code></pre>
+<p>Create a repository on GitHub. Clone it. You will need write access to the repository, so you need to use HTTPS and know your GitHub password or set up SSH keys. If you are on a machine which is not yours, HTTPS will be easiest. Alternatively, just login to GitHub and use direct upload (e.g. with drag and drop).</p>
+<pre><code>git clone ...</code></pre>
+<pre><code>git add nc_state.geojson elev_state_500m.png</code></pre>
+<pre><code>git commit ...
+git push</code></pre>
+<pre><code>gdaldem color-relief -of PNG elev_state_500m.vrt colors.txt elev_state_500m.png -alpha</code></pre>
+<pre><code>git commit elev_state_500m.png ...
+git push</code></pre>
+<h2 id="resources">Resources</h2>
+<h3 id="repositories">Repositories</h3>
+<ul>
+<li><a href="https://osf.io/a5imq/wiki/How%20to%20Upload%20Data%20to%20the%20OSF">How to deposit data on the OSF</a> (part of Reproducibility Project: Cancer Biology)</li>
+<li><a href="https://intercom.help/authorea/host-data">Hosting Data on Authorea</a> (Authorea help pages)</li>
+<li><a href="https://support.figshare.com/support/solutions/folders/6000200032">Getting started with figshare: How to's</a> (figshare Support pages)</li>
+<li><a href="http://datadryad.org/pages/faq">Dryad Digital Repository: Frequently Asked Questions</a></li>
+</ul>
+<h3 id="other">Other</h3>
+<ul>
+<li><a href="https://help.github.com/articles/rendering-and-diffing-images/">Rendering and diffing images on GitHub</a></li>
+<li><a href="https://help.github.com/articles/mapping-geojson-files-on-github/">Mapping GeoJSON files on GitHub</a></li>
+<li><a href="http://epsg.io/">EPSG.io</a> (Coordinate Systems Worldwide)</li>
+</ul>
 
 </main>
 
