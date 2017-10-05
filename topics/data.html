@@ -32,21 +32,19 @@
 <main>
 <!-- This is a generated file. Do not edit. -->
 <h1 id="publishing-data-on-web">Publishing data on web</h1>
+<h2 id="custom-web-page-with-geospatial-data">Custom web page with geospatial data</h2>
+<h3 id="preparation">Preparation</h3>
 <p>Install GDAL and <em>jq</em> (command for Ubuntu):</p>
 <pre><code>sudo apt install gdal-bin jq</code></pre>
+<p>Get data and upack them:</p>
+<pre><code>wget http://grass.osgeo.org/sampledata/north_carolina/nc_rast_geotiff.tar.gz
+wget http://grass.osgeo.org/sampledata/north_carolina/nc_shape.tar.gz
+tar xvf nc_rast_geotiff.tar.gz
+tar xvf nc_shape.tar.gz</code></pre>
+<p>Covert Shapefile to GeoJSON:</p>
 <pre><code>ogr2ogr -f GeoJSON -t_srs crs:84 nc_state.geojson ncshape/nc_state.shp</code></pre>
-<pre><code>gdalinfo elev_state_500m.png</code></pre>
-<pre><code>gdalinfo -json elev_state_500m.png | jq .cornerCoordinates | \
-    jq &quot;.lowerLeft, .upperRight&quot; | \
-    tr &quot;\n&quot; &quot; &quot; | sed -e &quot;s/\] \[/,/g&quot; | tr -s &quot; &quot;</code></pre>
-<pre><code>gdalinfo -json elev_state_500m.png | \
-    jq -c &quot;.cornerCoordinates | [.lowerLeft[], .upperRight[]] &quot; | \
-    sed &quot;s/,/, /g&quot;</code></pre>
-<pre><code>gdalwarp -of VRT -r average -t_srs crs:84 ncrast/elev_state_500m.tif elev_state_500m.vrt
-gdal_translate -of PNG elev_state_500m.vrt elev_state_500m.png</code></pre>
-<pre><code>gdalinfo elev_state_500m.png</code></pre>
-<p>Firefox <a href="https://developer.mozilla.org/en-US/docs/Same-origin_policy_for_file:_URIs">policy</a> allows for a local file in the same directory to be loaded. Chrome and Chromium require a special command line option (replace <code>chromium-browser</code> by <code>chrome</code> or path to it if needed):</p>
-<pre><code>chromium-browser --disable-web-security --user-data-dir</code></pre>
+<h3 id="web-page">Web page</h3>
+<p>Now create a file in a text editor with the following HTML code and open this file in a web browser:</p>
 <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
@@ -64,6 +62,8 @@ gdal_translate -of PNG elev_state_500m.vrt elev_state_500m.png</code></pre>
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
+<p>The first half of the file links to OpenLayers JavaScript mapping library (CSS files and JavaScript files). The second half is mostly empty and we will fill it now.</p>
+<p>Here is the basic JavaScript code to get OpenStreetMap as a base map:</p>
 <pre><code>var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -82,6 +82,7 @@ gdal_translate -of PNG elev_state_500m.vrt elev_state_500m.png</code></pre>
     zoom: 2
   })
 });</code></pre>
+<p>Now would be the time to reload the page in the web browser. After that we can add code to load our GeoJSON file before the code for OpenStreetMap:</p>
 <pre><code>var vectorSource = new ol.source.Vector({
   format: new ol.format.GeoJSON(),
   url: &#39;nc_state.geojson&#39;,
@@ -90,6 +91,34 @@ gdal_translate -of PNG elev_state_500m.vrt elev_state_500m.png</code></pre>
 var vectorLayer = new ol.layer.Vector({
   source: vectorSource
 });</code></pre>
+<p>We need to edit the list of layers in the code add the GeoJSON:</p>
+<pre><code>var map = new ol.Map({
+    layers: [
+      new ol.layer.Tile({
+        source: new ol.source.OSM()
+      }),
+      vectorLayer
+    ],
+    ...</code></pre>
+<p>Now you can look again in the web browser and you should see the borders of North Carolina as a separate layer.</p>
+<p>If you don't see it the reason might error in your JavaScript code or the reason might be same-origin policy in you web browser. You can tell the difference by starting developer tools in your web browser and looking at messages in the console or log (e.g. in Firefox, Tools -&gt; Web Developer -&gt; Toggle Tools -&gt; Console). Firefox <a href="https://developer.mozilla.org/en-US/docs/Same-origin_policy_for_file:_URIs">policy</a> allows for a local file in the same directory to be loaded, so you should be good to go when using Firefox. However, Chrome and Chromium require a special command line option (replace <code>chromium-browser</code> by <code>chrome</code> or path to it if needed):</p>
+<pre><code>chromium-browser --disable-web-security --user-data-dir</code></pre>
+<h3 id="converting-raster-and-its-extracting-metadata">Converting raster and its extracting metadata</h3>
+<pre><code>gdalwarp -of VRT -r average -t_srs crs:84 ncrast/elev_state_500m.tif elev_state_500m.vrt
+gdal_translate -of PNG elev_state_500m.vrt elev_state_500m.png</code></pre>
+<p>GDAL &gt;=2</p>
+<pre><code>gdalinfo elev_state_500m.png</code></pre>
+<p>Lower Left, Upper Right</p>
+<p>[-84.4223856, 33.4882788, -75.0518788, 36.6207207]</p>
+<p>optional :</p>
+<pre><code>gdalinfo -json elev_state_500m.png | jq .cornerCoordinates | \
+    jq &quot;.lowerLeft, .upperRight&quot; | \
+    tr &quot;\n&quot; &quot; &quot; | sed -e &quot;s/\] \[/,/g&quot; | tr -s &quot; &quot;</code></pre>
+<pre><code>gdalinfo -json elev_state_500m.png | \
+    jq -c &quot;.cornerCoordinates | [.lowerLeft[], .upperRight[]] &quot; | \
+    sed &quot;s/,/, /g&quot;</code></pre>
+<h3 id="adding-raster">Adding raster</h3>
+<p>Now, we can add the JavaScript code to the web page:</p>
 <pre><code>var imageExtent = [-84.4223856,  33.4882788, -75.0518788,  36.6207207];
 rasterLayer = new ol.layer.Image({
       source: new ol.source.ImageStatic({
@@ -99,22 +128,28 @@ rasterLayer = new ol.layer.Image({
         imageExtent: imageExtent,
         attributions: &quot;NC Elevation: Neteler &amp;amp; Mitasova 2008&quot;
       })});</code></pre>
-<pre><code>var map = new ol.Map({
-    layers: [
-      new ol.layer.Tile({
-        source: new ol.source.OSM()
-      }),
-      rasterLayer,
-      vectorLayer
-    ],</code></pre>
 <p>See the complete web page <a href="../resources/openlayers_raster_and_vector.html">here</a>.</p>
 <p>Install Git (command for Ubuntu):</p>
 <pre><code>sudo apt install git</code></pre>
 <p>Create a repository on GitHub. Clone it. You will need write access to the repository, so you need to use HTTPS and know your GitHub password or set up SSH keys. If you are on a machine which is not yours, HTTPS will be easiest. Alternatively, just login to GitHub and use direct upload (e.g. with drag and drop).</p>
 <pre><code>git clone ...</code></pre>
+<p>Move the web page files into the repository, i.e. the HTML file, the PNG file, and the GeoJSON file. You can use <em>mv</em> to do that:</p>
+<pre><code>mv index.html openlayers-test
+mv nc_state.geojson openlayers-test
+mv elev_state_500m.png openlayers-test</code></pre>
 <pre><code>git add nc_state.geojson elev_state_500m.png</code></pre>
 <pre><code>git commit ...
 git push</code></pre>
+<h3 id="colorize-the-raster-and-examine-the-change-on-github">Colorize the raster and examine the change on GitHub</h3>
+<p>gdaldem</p>
+<pre><code>cat &gt; colors.txt &lt;&lt;EOF
+100% 255 255 255
+60%  235 220 175
+40%  190 185 135
+5%   240 250 150
+0     50 180  50
+nv   0 0 0 0
+EOF</code></pre>
 <pre><code>gdaldem color-relief -of PNG elev_state_500m.vrt colors.txt elev_state_500m.png -alpha</code></pre>
 <pre><code>git commit elev_state_500m.png ...
 git push</code></pre>
@@ -125,6 +160,11 @@ git push</code></pre>
 <li><a href="https://intercom.help/authorea/host-data">Hosting Data on Authorea</a> (Authorea help pages)</li>
 <li><a href="https://support.figshare.com/support/solutions/folders/6000200032">Getting started with figshare: How to's</a> (figshare Support pages)</li>
 <li><a href="http://datadryad.org/pages/faq">Dryad Digital Repository: Frequently Asked Questions</a></li>
+<li><a href="http://zenodo.org/">Zenodo</a></li>
+<li><a href="https://data.world/">data.world</a></li>
+<li><a href="http://hydroshare.org/">Hydroshare</a></li>
+<li><a href="http://opentopography.org/">OpenTopography</a></li>
+<li><a href="https://www.nature.com/sdata/policies/repositories">Recommended Data Repositories by Nature</a></li>
 </ul>
 <h3 id="other">Other</h3>
 <ul>
@@ -132,6 +172,7 @@ git push</code></pre>
 <li><a href="https://help.github.com/articles/mapping-geojson-files-on-github/">Mapping GeoJSON files on GitHub</a></li>
 <li><a href="http://epsg.io/">EPSG.io</a> (Coordinate Systems Worldwide)</li>
 </ul>
+<h2 id="assignment">Assignment</h2>
 
 </main>
 
