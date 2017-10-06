@@ -34,8 +34,8 @@
 <h1 id="publishing-data-on-web">Publishing data on web</h1>
 <h2 id="custom-web-page-with-geospatial-data">Custom web page with geospatial data</h2>
 <h3 id="preparation">Preparation</h3>
-<p>Install GDAL and <em>jq</em> (command for Ubuntu):</p>
-<pre><code>sudo apt install gdal-bin jq</code></pre>
+<p>Install GDAL (command for Ubuntu):</p>
+<pre><code>sudo apt install gdal-bin</code></pre>
 <p>Get data and upack them:</p>
 <pre><code>wget http://grass.osgeo.org/sampledata/north_carolina/nc_rast_geotiff.tar.gz
 wget http://grass.osgeo.org/sampledata/north_carolina/nc_shape.tar.gz
@@ -44,7 +44,7 @@ tar xvf nc_shape.tar.gz</code></pre>
 <p>Covert Shapefile to GeoJSON:</p>
 <pre><code>ogr2ogr -f GeoJSON -t_srs crs:84 nc_state.geojson ncshape/nc_state.shp</code></pre>
 <h3 id="web-page">Web page</h3>
-<p>Now create a file in a text editor with the following HTML code and open this file in a web browser:</p>
+<p>Now create a file in a text editor with the following HTML code, name the file <code>index.html</code> and open this file in a web browser:</p>
 <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
@@ -104,22 +104,39 @@ var vectorLayer = new ol.layer.Vector({
 <p>If you don't see it the reason might error in your JavaScript code or the reason might be same-origin policy in you web browser. You can tell the difference by starting developer tools in your web browser and looking at messages in the console or log (e.g. in Firefox, Tools -&gt; Web Developer -&gt; Toggle Tools -&gt; Console). Firefox <a href="https://developer.mozilla.org/en-US/docs/Same-origin_policy_for_file:_URIs">policy</a> allows for a local file in the same directory to be loaded, so you should be good to go when using Firefox. However, Chrome and Chromium require a special command line option (replace <code>chromium-browser</code> by <code>chrome</code> or path to it if needed):</p>
 <pre><code>chromium-browser --disable-web-security --user-data-dir</code></pre>
 <h3 id="converting-raster-and-its-extracting-metadata">Converting raster and its extracting metadata</h3>
+<p>To make sharing of the geospatial data easier, we will again convert to CRS:84. For that we will use <em>gdalwarp</em>. However, PNG cannot be written directly using <em>gdalwarp</em> with the current version of GDAL, so we first write a GDAL virtual dataset (VRT) and then we use <em>gdal_translate</em> to convert the reprojected VRT to PNG.</p>
 <pre><code>gdalwarp -of VRT -r average -t_srs crs:84 ncrast/elev_state_500m.tif elev_state_500m.vrt
 gdal_translate -of PNG elev_state_500m.vrt elev_state_500m.png</code></pre>
-<p>GDAL &gt;=2</p>
+<p>We are using PNG because unlike TIFF, web browsers can display it. However, the PNG file itself does not carry the geospatial metadata (unlike GeoTIFF). Therefore, we need to get the information from the metadata and put it to JavaScript code manually. We already know the coordinate reference system (but we can check it). What we need to get is the extent and we can do that using <em>gdalinfo</em>:</p>
 <pre><code>gdalinfo elev_state_500m.png</code></pre>
-<p>Lower Left, Upper Right</p>
+<p>All we need is <code>Lower Left</code> and <code>Upper Right</code> and we could just copy the numbers to the JavaScript code in the next section. However, for this exercise, we will extract the extent in an automated way.</p>
 <p>[-84.4223856, 33.4882788, -75.0518788, 36.6207207]</p>
-<p>optional :</p>
+<p>The previous <em>gdalinfo</em> command gives output which can be processed by <em>grep</em> and other command line tools, but the output format may not be guaranteed to stay the same, so a new version may not work with command based on it. For this reason we will use a more stable JSON output offered by <em>gdalinfo</em>. For this, we need GDAL version 2 or higher, so you need to make sure you have it. For example, on Ubuntu 16.04, the version of GDAL is 1, so we need to add a PPA (Personal Package Archive) repository which provides a more recent version of GDAL with the cost of potential less stability within thesoftware or in relation to other installed software. The commands to do it follow:</p>
+<p>sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable sudo apt update sudo apt upgrade</p>
+<p>Now, with GDAL version 2 or higher, we can use the <code>-json</code> option to obtain JSON output:</p>
+<pre><code>gdalinfo -json elev_state_500m.png</code></pre>
+<p>JSON is not easily parseable with tools such as <em>grep</em>, however there is a tool called <em>jq</em> which works in a similar way as <em>grep</em> and other tools but for JSON. Here is an installation command for Ubuntu:</p>
+<pre><code>sudo apt install jq</code></pre>
+<p>Now we can use <em>jq</em> and pipes in the same way we would use <em>grep</em>. JSON format consists of keys and values in dictionaries where values can be strings, numbers, lists, or dictionaries. Using the <code>.key</code> syntax we get only the value associated with the given key:</p>
+<pre><code>gdalinfo -json elev_state_500m.png | jq .cornerCoordinates</code></pre>
+<p>We can pipe the output again to <em>jq</em> and get values for two keys using <code>.oneKey, .anotherKey</code> syntax:</p>
+<pre><code>gdalinfo -json elev_state_500m.png | jq .cornerCoordinates | \
+    jq &quot;.lowerLeft, .upperRight&quot;</code></pre>
+<p>This gives us all information we need but not formated exactly as we want it, i.e. a single list in one line, so we use <em>tr</em> to replace newlines by spaces (<code>tr &quot;\n&quot; &quot; &quot;</code>), <em>sed</em> to replace <code>] [</code> by comma (using expression <code>/\] \[/,/</code>), and finally we use tr again to squeeze all repeated spaces into one:</p>
 <pre><code>gdalinfo -json elev_state_500m.png | jq .cornerCoordinates | \
     jq &quot;.lowerLeft, .upperRight&quot; | \
     tr &quot;\n&quot; &quot; &quot; | sed -e &quot;s/\] \[/,/g&quot; | tr -s &quot; &quot;</code></pre>
+<p>Alternatively, we can leverage more the <em>jq</em> command. The <em>jq</em> command itself has a pipe syntax which has similar logic to the command line pipes, so we can actually write expression <code>.cornerCoordinates | lowerLeft, .upperRight</code>. To merge the two separate list (which are the values <code>.lowerLeft</code> and <code>.upperRight</code>), we can use the plus operator in the <em>jq</em> expression (<code>lowerLeft + .upperRight</code>). To avoid <em>jq</em> default formatting with one list item per line, we use <code>-c</code> to create compact output. Then we use <em>sed</em> just to replace comma by comma followed by a space (expression <code>/,/, /</code>) to have a better coding style in the JavaScript code:</p>
 <pre><code>gdalinfo -json elev_state_500m.png | \
-    jq -c &quot;.cornerCoordinates | [.lowerLeft[], .upperRight[]] &quot; | \
+    jq -c &quot;.cornerCoordinates | [.lowerLeft[], .upperRight[]]&quot; | \
     sed &quot;s/,/, /g&quot;</code></pre>
+<p>You can learn more about <em>jq</em> online or using:</p>
+<pre><code>man jq</code></pre>
+<p>Same applies to <em>tr</em> and <em>sed</em> but using the <em>info</em> command instead of the <em>man</em> command will give you full documentation:</p>
+<pre><code>info tr</code></pre>
 <h3 id="adding-raster">Adding raster</h3>
 <p>Now, we can add the JavaScript code to the web page:</p>
-<pre><code>var imageExtent = [-84.4223856,  33.4882788, -75.0518788,  36.6207207];
+<pre><code>var imageExtent = [-84.4223856, 33.4882788, -75.0518788, 36.6207207];
 rasterLayer = new ol.layer.Image({
       source: new ol.source.ImageStatic({
         url: &#39;elev_state_500m.png&#39;,
@@ -128,20 +145,28 @@ rasterLayer = new ol.layer.Image({
         imageExtent: imageExtent,
         attributions: &quot;NC Elevation: Neteler &amp;amp; Mitasova 2008&quot;
       })});</code></pre>
-<p>See the complete web page <a href="../resources/openlayers_raster_and_vector.html">here</a>.</p>
-<p>Install Git (command for Ubuntu):</p>
+<p>See the complete web page <a href="../resources/openlayers_raster_and_vector.html">here</a> and compare it with yours (you can see the code of the page in your web browsers; usually using Ctrl+U).</p>
+<h3 id="publishing-with-github">Publishing with GitHub</h3>
+<p>Now we will publish the web page using GitHub, specifically GitHub Pages service which can be activated for any Git repository on GitHub.</p>
+<p>Install Git on your local machine (command for Ubuntu):</p>
 <pre><code>sudo apt install git</code></pre>
-<p>Create a repository on GitHub. Clone it. You will need write access to the repository, so you need to use HTTPS and know your GitHub password or set up SSH keys. If you are on a machine which is not yours, HTTPS will be easiest. Alternatively, just login to GitHub and use direct upload (e.g. with drag and drop).</p>
-<pre><code>git clone ...</code></pre>
-<p>Move the web page files into the repository, i.e. the HTML file, the PNG file, and the GeoJSON file. You can use <em>mv</em> to do that:</p>
+<p>Create a repository on GitHub. You will need write access to the repository, so you need to use HTTPS and know your GitHub password or set up SSH keys. If you are on a machine which is not yours (like NCSU VCL machine), HTTPS will be easiest. Alternatively, just login to GitHub (in a web browser) and use direct upload (e.g. with drag and drop).</p>
+<p>Now clone the repository. We will call it <code>openlayers-test</code> (<code>...</code> stands for URL of the repository).</p>
+<pre><code>git clone ... openlayers-test</code></pre>
+<p>Move the web page files into the repository, i.e. the HTML file, the PNG file, and the GeoJSON file. Then change the directory to the repository. You can use <em>mv</em> and <em>cd</em> to do that:</p>
 <pre><code>mv index.html openlayers-test
 mv nc_state.geojson openlayers-test
-mv elev_state_500m.png openlayers-test</code></pre>
-<pre><code>git add nc_state.geojson elev_state_500m.png</code></pre>
+mv elev_state_500m.png openlayers-test
+cd openlayers-test</code></pre>
+<p>Add the files to the repository:</p>
+<pre><code>git add index.html nc_state.geojson elev_state_500m.png</code></pre>
+<p>Now you can commit and push:</p>
 <pre><code>git commit ...
 git push</code></pre>
+<p>Now go to the repository page on GitHub in your web browser, go to <em>Settings</em> and in <em>Options</em> (loaded by default) find <em>GitHub Pages</em>. In <em>Source</em> select <em>master branch</em>, then click <em>Save</em>. Wait for the page to reload and show you the URL of the newly created web site which is at yourusername.github.io/repository-name.</p>
 <h3 id="colorize-the-raster-and-examine-the-change-on-github">Colorize the raster and examine the change on GitHub</h3>
-<p>gdaldem</p>
+<p>Now let's change the color table of the raster. For that we will use <em>gdaldem</em> which accepts color tables in format one value-color pair per line (similar format to what e.g. GRASS GIS uses).</p>
+<p>The color table needs to be in a file. We can create a file from command line without using a text editor, just by copy pasting the following command line code block (all lines together):</p>
 <pre><code>cat &gt; colors.txt &lt;&lt;EOF
 100% 255 255 255
 60%  235 220 175
@@ -150,9 +175,14 @@ git push</code></pre>
 0     50 180  50
 nv   0 0 0 0
 EOF</code></pre>
+<p>The above code uses what is called <em>here-document</em>. The <code>&lt;&lt;EOF</code> part starts a content of a file and all is part of this file until the line which says <code>EOF</code>. This file (here-document) is used as input to <em>cat</em> command which writes it to an actual file on the disk (<code>cat &gt; colors.txt</code>).</p>
+<p>We use <em>gdaldem</em> in the <code>color-relief</code> mode, use the VRT dataset as input, and output PNG (change the path to files as needed):</p>
 <pre><code>gdaldem color-relief -of PNG elev_state_500m.vrt colors.txt elev_state_500m.png -alpha</code></pre>
+<p>The <code>-alpha</code> option ensures that an alpha channel (transparency and opacity) is written to the PNG file and together with <code>nv 0 0 0 0</code> line in color table file, it ensures that NULL values are transparent.</p>
+<p>Then commit the change in the PNG file and push:</p>
 <pre><code>git commit elev_state_500m.png ...
 git push</code></pre>
+<p>Finally, go to GitHub and find the commit (change) you just made. While Git in command line can't show differences in binary files such as PNGs, GitHub has several different ways of exploring changes in selected binary formats including PNGs.</p>
 <h2 id="resources">Resources</h2>
 <h3 id="repositories">Repositories</h3>
 <ul>
@@ -173,6 +203,8 @@ git push</code></pre>
 <li><a href="http://epsg.io/">EPSG.io</a> (Coordinate Systems Worldwide)</li>
 </ul>
 <h2 id="assignment">Assignment</h2>
+<p>Explore the general repositories for scientific data linked above and search for a repository which is used in your field. If you find something what is not on the list, you can share it on the message board.</p>
+<p>Then go through the instructions to create your own simple, but interactive web map showing a raster and vector and publish it through GitHub. Send the link to the repository and to the web page online to the message board.</p>
 
 </main>
 
