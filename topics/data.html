@@ -32,6 +32,7 @@
 <main>
 <!-- This is a generated file. Do not edit. -->
 <h1 id="publishing-data-on-web">Publishing data on web</h1>
+<p>To publish scientific data online, we have several choices based on the discipline and type of data. The resources section lists several repositories which are either general or with some geospatial focus. For the practical part, we will try an absolutely general method which does not use a centralized scientific repository, but which is applicable also for non-scientific geospatial data.</p>
 <h2 id="custom-web-page-with-geospatial-data">Custom web page with geospatial data</h2>
 <h3 id="preparation">Preparation</h3>
 <p>Install GDAL (command for Ubuntu):</p>
@@ -109,10 +110,13 @@ var vectorLayer = new ol.layer.Vector({
 gdal_translate -of PNG elev_state_500m.vrt elev_state_500m.png</code></pre>
 <p>We are using PNG because unlike TIFF, web browsers can display it. However, the PNG file itself does not carry the geospatial metadata (unlike GeoTIFF). Therefore, we need to get the information from the metadata and put it to JavaScript code manually. We already know the coordinate reference system (but we can check it). What we need to get is the extent and we can do that using <em>gdalinfo</em>:</p>
 <pre><code>gdalinfo elev_state_500m.png</code></pre>
-<p>All we need is <code>Lower Left</code> and <code>Upper Right</code> and we could just copy the numbers to the JavaScript code in the next section. However, for this exercise, we will extract the extent in an automated way.</p>
-<p>[-84.4223856, 33.4882788, -75.0518788, 36.6207207]</p>
+<p>All we need is <code>Lower Left</code> and <code>Upper Right</code> and we could just copy the numbers to the JavaScript code in the next section. However, for this exercise, we will extract the extent in an automated way. If you can't get GDAL version 2 or <em>jq</em> (see below), you can skip executing commands in this part and just read through it (but you should be good to go if you are using, e.g. an Ubuntu machine from NCSU VCL).</p>
+<p>What we want to get is the following line:</p>
+<pre><code>[-84.4223856,  33.4882788, -75.0518788,  36.6207207]</code></pre>
 <p>The previous <em>gdalinfo</em> command gives output which can be processed by <em>grep</em> and other command line tools, but the output format may not be guaranteed to stay the same, so a new version may not work with command based on it. For this reason we will use a more stable JSON output offered by <em>gdalinfo</em>. For this, we need GDAL version 2 or higher, so you need to make sure you have it. For example, on Ubuntu 16.04, the version of GDAL is 1, so we need to add a PPA (Personal Package Archive) repository which provides a more recent version of GDAL with the cost of potential less stability within thesoftware or in relation to other installed software. The commands to do it follow:</p>
-<p>sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable sudo apt update sudo apt upgrade</p>
+<pre><code>sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+sudo apt update
+sudo apt upgrade</code></pre>
 <p>Now, with GDAL version 2 or higher, we can use the <code>-json</code> option to obtain JSON output:</p>
 <pre><code>gdalinfo -json elev_state_500m.png</code></pre>
 <p>JSON is not easily parseable with tools such as <em>grep</em>, however there is a tool called <em>jq</em> which works in a similar way as <em>grep</em> and other tools but for JSON. Here is an installation command for Ubuntu:</p>
@@ -137,7 +141,7 @@ gdal_translate -of PNG elev_state_500m.vrt elev_state_500m.png</code></pre>
 <h3 id="adding-raster">Adding raster</h3>
 <p>Now, we can add the JavaScript code to the web page:</p>
 <pre><code>var imageExtent = [-84.4223856, 33.4882788, -75.0518788, 36.6207207];
-rasterLayer = new ol.layer.Image({
+var rasterLayer = new ol.layer.Image({
       source: new ol.source.ImageStatic({
         url: &#39;elev_state_500m.png&#39;,
         crossOrigin: &#39;&#39;,
@@ -145,6 +149,16 @@ rasterLayer = new ol.layer.Image({
         imageExtent: imageExtent,
         attributions: &quot;NC Elevation: Neteler &amp;amp; Mitasova 2008&quot;
       })});</code></pre>
+<p>We need to edit the list of layers again to add the raster:</p>
+<pre><code>var map = new ol.Map({
+    layers: [
+      new ol.layer.Tile({
+        source: new ol.source.OSM()
+      }),
+      rasterLayer,
+      vectorLayer
+    ],
+    ...</code></pre>
 <p>See the complete web page <a href="../resources/openlayers_raster_and_vector.html">here</a> and compare it with yours (you can see the code of the page in your web browsers; usually using Ctrl+U).</p>
 <h3 id="publishing-with-github">Publishing with GitHub</h3>
 <p>Now we will publish the web page using GitHub, specifically GitHub Pages service which can be activated for any Git repository on GitHub.</p>
@@ -201,6 +215,7 @@ git push</code></pre>
 <li><a href="https://help.github.com/articles/rendering-and-diffing-images/">Rendering and diffing images on GitHub</a></li>
 <li><a href="https://help.github.com/articles/mapping-geojson-files-on-github/">Mapping GeoJSON files on GitHub</a></li>
 <li><a href="http://epsg.io/">EPSG.io</a> (Coordinate Systems Worldwide)</li>
+<li><a href="http://openlayers.org/">OpenLayers</a></li>
 </ul>
 <h2 id="assignment">Assignment</h2>
 <p>Explore the general repositories for scientific data linked above and search for a repository which is used in your field. If you find something what is not on the list, you can share it on the message board.</p>
