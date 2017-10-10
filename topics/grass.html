@@ -32,13 +32,38 @@
 <main>
 <!-- This is a generated file. Do not edit. -->
 <h1 id="grass-gis">GRASS GIS</h1>
-<p>GRASS GIS is a free and open source desktop geographic system and geospatial analytics library which serves as a platform for open science.</p>
+<p>GRASS GIS is a free and open source desktop geographic system and geospatial analytics library which serves as a platform for open science. It is licensed under GNU GPL.</p>
 <p>Official website and download: <a href="https://grass.osgeo.org" class="uri">https://grass.osgeo.org</a></p>
+<h2 id="grass-gis-and-repeating-what-you-did">GRASS GIS and repeating what you did</h2>
+<h3 id="reviewing-history">Reviewing history</h3>
+<p>See the file where the history is saved:</p>
+<pre><code>echo $HISTFILE</code></pre>
+<p>Review the history:</p>
+<pre><code>less $HISTFILE</code></pre>
+<p>Make a backup of the currently used history file:</p>
+<pre><code>cp $HISTFILE workflow.txt</code></pre>
+<p>Store the unsaved history to the file:</p>
+<pre><code>history -a</code></pre>
+<h3 id="data-provenance">Data provenance</h3>
+<p>Basic raster map matedata with command used to create the map:</p>
+<pre><code>r.info elevation</code></pre>
+<p>The provenance information by itself:</p>
+<pre><code>r.info -h elevation</code></pre>
+<p>The provenance of a vector map (series of commands and additional information):</p>
+<pre><code>v.info -h lakes</code></pre>
 <h2 id="examples-of-how-grass-gis-is-used-to-publish-research">Examples of how GRASS GIS is used to publish research</h2>
+<p>Here is couple of examples of how GRASS GIS was used to publish and disseminate research.</p>
 <h3 id="futures">FUTURES</h3>
-<p><a href="https://grasswiki.osgeo.org/wiki/FUTURES_tutorial" class="uri">https://grasswiki.osgeo.org/wiki/FUTURES_tutorial</a> <a href="https://grass.osgeo.org/grass7/manuals/addons/r.futures.html" class="uri">https://grass.osgeo.org/grass7/manuals/addons/r.futures.html</a></p>
+<p>FUTURES urban model currently being developed at NCSU as GRASS GIS module.</p>
+<ul>
+<li><a href="https://grasswiki.osgeo.org/wiki/FUTURES_tutorial" class="uri">https://grasswiki.osgeo.org/wiki/FUTURES_tutorial</a></li>
+<li><a href="https://grass.osgeo.org/grass7/manuals/addons/r.futures.html" class="uri">https://grass.osgeo.org/grass7/manuals/addons/r.futures.html</a></li>
+</ul>
 <h3 id="temporal-framework">Temporal framework</h3>
-<p><a href="https://grasswiki.osgeo.org/wiki/Temporal_data_processing" class="uri">https://grasswiki.osgeo.org/wiki/Temporal_data_processing</a></p>
+<p>Temporal framework for managing and analyzing time series developed by Soeren Gebbert an a part of GRASS GIS.</p>
+<ul>
+<li><a href="https://grasswiki.osgeo.org/wiki/Temporal_data_processing" class="uri">https://grasswiki.osgeo.org/wiki/Temporal_data_processing</a></li>
+</ul>
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href="https://grasswiki.osgeo.org/wiki/From_GRASS_GIS_novice_to_power_user_(workshop_at_FOSS4G_Boston_2017)">From GRASS GIS novice to power user</a> (workshop material for FOSS4G Boston 2017)</li>
