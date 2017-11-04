@@ -32,7 +32,11 @@
 <main>
 <!-- This is a generated file. Do not edit. -->
 <h1 id="publishing-code-as-part-of-grass-gis">Publishing code as part of GRASS GIS</h1>
-<p>This guide counts on using Ubuntu, so please use NCSU VCL if you want to or need to follow the guide closely.</p>
+<p>This guide counts on using Ubuntu, so please use NCSU VCL if you want to or need to follow the guide closely. The guide requires GRASS GIS version 7.2, so on Ubuntu 16.04, you need to install GRASS GIS from UbuntuGIS PPA:</p>
+<pre><code>sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install grass grass-gui</code></pre>
 <h2 id="basic-structure">Basic structure</h2>
 <p>A minimal GRASS GIS module written in Python needs to contain these three following files:</p>
 <ul>
@@ -102,7 +106,7 @@ import grass.script as gscript</code></pre>
 <p>To increase chances our code is accepted by community, we should check it against the GRASS GIS submitting guidelines for Python code:</p>
 <p><a href="https://trac.osgeo.org/grass/wiki/Submitting/Python" class="uri">https://trac.osgeo.org/grass/wiki/Submitting/Python</a></p>
 <h2 id="html-documentation">HTML documentation</h2>
-<p>A documentation of a module in GRASS GIS uses HTML as the markup language, but the HTML code for the full web page is generated automatically. We need to provide just basic sections:: description, see also, and author or authors.</p>
+<p>A documentation of a module in GRASS GIS uses HTML as the markup language, but the HTML code for the full web page is generated automatically. We need to provide just basic sections:: description, see also, and author or authors. These sections are marked as heading level 2, i.e. <code>&lt;h2&gt;</code>. The name of the file is the name of the module with the extension <code>.html</code>, so <code>r.plus.html</code> in our case.</p>
 <p>The description section should explain what the module does, how it does it, and how to use it. Here we provide just an short oversimplified description as a place holder:</p>
 <pre><code>&lt;h2&gt;DESCRIPTION&lt;/h2&gt;
 
@@ -120,8 +124,32 @@ Ann Doe</code></pre>
 <p>For more information, see the GRASS GIS submitting guidelines for documentation:</p>
 <p><a href="https://trac.osgeo.org/grass/wiki/Submitting/Docs" class="uri">https://trac.osgeo.org/grass/wiki/Submitting/Docs</a></p>
 <h2 id="makefile">Makefile</h2>
+<p>A Makefile is a file which typically gives instructions how to compile code (e.g. C or C++ code) into a executable (binary). Although Python code does not have to compiled into binary, we are still using Makefile because in this case, it does several important steps such as creating the documentation and putting files into a right place in order to run the module as part of GRASS GIS. Most of instructions how to do that are part of GRASS GIS and our Makefile will just use those. Thus, our Makefile is exactly the same as any other script except the name of the module which we need to provide as a value of <code>PGM</code> variable.</p>
+<pre><code>MODULE_TOPDIR = ../..
+
+PGM = r.plus
+
+include $(MODULE_TOPDIR)/include/Make/Script.make
+
+default: script</code></pre>
+<p>The Makefile is used by a tool called <em>make</em>. This tool needs to know where to find the Makefiles which come with GRASS GIS. For that we need use the <code>MODULE_TOPDIR</code> variable.</p>
+<p>However, before that it is important to note that we need to have <em>make</em> installed and we need GRASS GIS with these Makefiles. To achieve that on Ubuntu, we need to install GRASS GIS development package which is called <code>grass-dev</code>.</p>
+<pre><code>sudo apt install grass-dev</code></pre>
+<p>Now we could run <em>make</em>, but since GRASS GIS 7.2 provides the same functionality in a more convenient way, we will use that. We can run <em>g.extension</em> module and point it to the directory with the module:</p>
+<pre><code>g.extension extension=r.plus url=/your/directory/with/the/module</code></pre>
+<p>After this, when we are in GRASS GIS command line, we can run our <em>r.plus</em> module in the same was as any other GRASS GIS module, i.e. without <code>./</code> or <code>python</code> and with GUI if requested.</p>
+<p>Obtain short help in command line:</p>
+<pre><code>r.plus --help</code></pre>
+<p>Run the module without parameters (GUI should appear):</p>
+<pre><code>r.plus</code></pre>
+<h2 id="publishing-and-downloading">Publishing and downloading</h2>
+<p>If we were putting to the module to GRASS GIS Addons, we would now check the submitting guidelines, conditions for submitting code and gaining access to the repository at an official page:</p>
+<p><a href="https://grass.osgeo.org/development/code-submission/" class="uri">https://grass.osgeo.org/development/code-submission/</a></p>
+<p>In our case, we are just publishing the code using GitHub, so we need to add files to Git, commit, and push.</p>
+<p>Now on another computer which currently also needs to be Linux (or potentially Mac OS), we can test installing the module from GitHub:</p>
+<pre><code>g.extension extension=r.plus url=github.com/anndoe/r.plus</code></pre>
 <h2 id="resources">Resources</h2>
-<h2 id="texts">Texts</h2>
+<h3 id="texts">Texts</h3>
 <ul>
 <li><a href="https://github.com/wenzeslaus/python-grass-addon">How to write a Python GRASS GIS 7 addon</a></li>
 <li><a href="https://grass.osgeo.org/grass72/manuals/libpython/script_intro.html">GRASS GIS Python scripting with script package</a> (official documentation)</li>
