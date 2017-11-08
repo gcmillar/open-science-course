@@ -32,17 +32,29 @@
 <main>
 <!-- This is a generated file. Do not edit. -->
 <h1 id="reproducible-computational-environments">Reproducible computational environments</h1>
-<p>[preliminary content]</p>
 <p>Official Docker website: <a href="https://www.docker.com/" class="uri">https://www.docker.com/</a></p>
+<p>Build an image using content of a GitHub repository:</p>
+<pre><code>docker build github.com/wenzeslaus/Notebook-for-processing-point-clouds-in-GRASS-GIS -t pointcloud-nb</code></pre>
+<p>Now run a container based on the newly created image:</p>
+<pre><code>docker run -p 8888:8888 pointcloud-nb</code></pre>
 <h2 id="resources">Resources</h2>
+<h3 id="slides">Slides</h3>
+<ul>
+<li><a href="../lectures/environments.html">Lecture slides</a> [main resource]</li>
+</ul>
 <h3 id="videos">Videos</h3>
 <ul>
 <li><a href="https://www.youtube.com/watch?v=pGYAg7TMmp0">Docker Tutorial - What is Docker &amp; Docker Containers, Images, etc?</a> (by LearnCode.academy, 8 mins)</li>
 <li><a href="https://www.youtube.com/watch?v=Q5POuMHxW-0">Introduction to Docker</a> (by Solomon Hykes at Twitter University, 47 mins)</li>
 </ul>
+<h3 id="references">References</h3>
+<ul>
+<li>Boettiger, C. (2015). An introduction to Docker for reproducible research. ACM SIGOPS Operating Systems Review, 49(1), 71-79.</li>
+</ul>
 <h2 id="assignment">Assignment</h2>
 <p>Install Docker and run a Jupyter Notebook inside a Docker container based on this repository:</p>
 <p><a href="https://github.com/wenzeslaus/Notebook-for-processing-point-clouds-in-GRASS-GIS" class="uri">https://github.com/wenzeslaus/Notebook-for-processing-point-clouds-in-GRASS-GIS</a></p>
+<p>See the instructions above or in the repository readme.</p>
 
 </main>
 
