@@ -32,9 +32,21 @@
 <main>
 <!-- This is a generated file. Do not edit. -->
 <h1 id="reproducible-computational-environments">Reproducible computational environments</h1>
+<h2 id="docker">Docker</h2>
 <p>Official Docker website: <a href="https://www.docker.com/" class="uri">https://www.docker.com/</a></p>
+<p>Docker is open source under Apache 2.0 license but some additional components and tools are under different licenses including proprietary ones.</p>
+<h3 id="installing-docker">Installing Docker</h3>
+<p>For this week we will need to install Docker. Here are instructions for different operating systems. The version you need to install for MS Windows and Mac OS is called Docker Toolbox. On Ubuntu, the package is currently called docker.io.</p>
+<p>MS Windows:</p>
+<p><a href="https://docs.docker.com/toolbox/toolbox_install_windows/" class="uri">https://docs.docker.com/toolbox/toolbox_install_windows/</a></p>
+<p>Mac OS:</p>
+<p><a href="https://docs.docker.com/toolbox/toolbox_install_mac/" class="uri">https://docs.docker.com/toolbox/toolbox_install_mac/</a></p>
+<p>Ubuntu:</p>
+<p>sudo apt-get install docker.io sudo groupadd docker sudo usermod -aG docker $USER</p>
+<p>You may need to agree with EULA or some terms and conditions in order to get the MS Windows or Mac OS version. If you don't feel comfortable installing it on your computer at this point or it doesn't work for you, you can use NCSU VCL Ubuntu machine.</p>
+<h3 id="building-and-running">Building and running</h3>
 <p>Build an image using content of a GitHub repository:</p>
-<pre><code>docker build github.com/wenzeslaus/Notebook-for-processing-point-clouds-in-GRASS-GIS -t pointcloud-nb</code></pre>
+<pre><code>docker build -t pointcloud-nb github.com/wenzeslaus/Notebook-for-processing-point-clouds-in-GRASS-GIS</code></pre>
 <p>Now run a container based on the newly created image:</p>
 <pre><code>docker run -p 8888:8888 pointcloud-nb</code></pre>
 <h2 id="resources">Resources</h2>
@@ -52,9 +64,8 @@
 <li>Boettiger, C. (2015). An introduction to Docker for reproducible research. ACM SIGOPS Operating Systems Review, 49(1), 71-79.</li>
 </ul>
 <h2 id="assignment">Assignment</h2>
-<p>Install Docker and run a Jupyter Notebook inside a Docker container based on this repository:</p>
-<p><a href="https://github.com/wenzeslaus/Notebook-for-processing-point-clouds-in-GRASS-GIS" class="uri">https://github.com/wenzeslaus/Notebook-for-processing-point-clouds-in-GRASS-GIS</a></p>
-<p>See the instructions above or in the repository readme.</p>
+<p>See the lecture (slides or videos), install Docker (see above) and run a Jupyter Notebook inside a Docker container based on this repository: gs.run_command('r.terrain.texture', elevation=&quot;terrain&quot;, texture=&quot;terrain_texture&quot;, convexity=&quot;terrain_convexity&quot;, concavity=&quot;terrain_concavity&quot;, feature=&quot;terrain_features&quot;) gs.run_command('r.geomorphon', elevation=&quot;dsm&quot;, forms=&quot;dsm_forms&quot;, search=&quot;12&quot;, skip=&quot;8&quot;, flat=&quot;10&quot;, overwrite=True) gs.run_command('v.lidar.mcc', input=&quot;uav_points&quot;, ground=&quot;mcc_ground&quot;, nonground=&quot;mcc_nonground&quot;) <a href="https://github.com/wenzeslaus/Notebook-for-processing-point-clouds-in-GRASS-GIS" class="uri">https://github.com/wenzeslaus/Notebook-for-processing-point-clouds-in-GRASS-GIS</a></p>
+<p>See the instructions above or in the repository readme file on how to run the notebook. Report on how that went and if you were able to run the whole notebook. The notebook has a section called Bonus tasks, skip that. You can run the Python or the Bash notebook or both.</p>
 
 </main>
 
