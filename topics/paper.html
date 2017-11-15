@@ -32,14 +32,39 @@
 <main>
 <!-- This is a generated file. Do not edit. -->
 <h1 id="writing-and-reproducing-an-open-science-paper">Writing and reproducing an open science paper</h1>
-<p>[preliminary content]</p>
+<h2 id="components-of-a-reproducible-paper">Components of a reproducible paper</h2>
+<p>Based on overview from Buckheit and Donoho 1995, Peng 2011, Rodríguez-Sánchez et al. 2016, and Marwick 2016:</p>
+<ul>
+<li>text: textual (natural language) document describing the research</li>
+<li>data: values of all variables (both original data and results)</li>
+<li>code: machine readable instructions to get results from original data</li>
+<li>versions: differences and updates of all versions over time</li>
+</ul>
+<p>Based on lectures in this course:</p>
+<ul>
+<li>text: background, methods, results, discussion, conclusion (PDF, HTML)</li>
+<li>data: included directory or as links to established repositories (plain text, open formats)</li>
+<li>specific code: scripts to perform analysis (Python, R, Bash, ...)</li>
+<li>reusable code: methods as a general software or part of larger project (GRASS GIS, R, ...)</li>
+<li>environment: details about all dependencies and the code (Docker, Vagrant, ...)</li>
+<li>versions: revision control system and repository (Git, Subversion, ...)</li>
+</ul>
+<p>For example, Buckheit and Donoho 1995 referring to Jon Claerbout of Stanford say about the importance of text versus code and environment the following:</p>
+<blockquote>
+<p>An article about computational science in a scientific publication is not the scholarship itself, it is merely advertising of the scholarship. The actual scholarship is the complete software development environment and the complete set of instructions which generated the figures.</p>
+</blockquote>
 <h2 id="resources">Resources</h2>
 <h3 id="slides">Slides</h3>
 <ul>
 <li><a href="../lectures/paper.html">Lecture slides</a> [main resource]</li>
 </ul>
-<h2 id="texts">Texts</h2>
-<h3 id="videos">Videos</h3>
+<h3 id="references">References</h3>
+<ul>
+<li>J. Buckheit and D. L. Donoho. Wavelets and Statistics, chapter Wavelab and reproducible research. Springer-Verlag, Berlin, New York, 1995.</li>
+<li>Peng, R. D. (2011). Reproducible research in computational science. Science, 334(6060), 1226-1227. DOI: 10.1126/science.1213847</li>
+<li>Rodríguez-Sánchez, F., Bartomeus, I., Varela, S., Pérez-Luque, A.J., Ciencia reproducible: qué, por qué, cómo. Ecosistemas [en linea] 2016, 25 (Mayo-Agosto) [Fecha de consulta: 4 de abril de 2017] Disponible en:&lt;<a href="http://www.redalyc.org/articulo.oa?id=54046745011" class="uri">http://www.redalyc.org/articulo.oa?id=54046745011</a>&gt; ISSN 1132-6344</li>
+<li>Marwick, B. (2016). Computational reproducibility in archaeological research: basic principles and a case study of their implementation. Journal of Archaeological Method and Theory, 1-27. DOI: 10.1007/s10816-015-9272-9</li>
+</ul>
 <h2 id="assignment">Assignment</h2>
 <p>Try to reproduce the following paper:</p>
 <ul>
