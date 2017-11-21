@@ -45,6 +45,8 @@
 <pre><code>sudo apt-get install docker.io
 sudo groupadd docker
 sudo usermod -aG docker $USER</code></pre>
+<p>In the Ubuntu (Linux) installation, for the change of group to take place (<code>usermod</code>), you need to login again. Logging out and logging in is one way. A more convenient way is the following command:</p>
+<pre><code>su - $USER</code></pre>
 <p>You may need to agree with EULA or some terms and conditions in order to get the MS Windows or Mac OS version. If you don't feel comfortable installing it on your computer at this point or it doesn't work for you, you can use NCSU VCL Ubuntu machine.</p>
 <h3 id="building-and-running">Building and running</h3>
 <p>Build an image using content of a GitHub repository:</p>
