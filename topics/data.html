@@ -45,7 +45,7 @@ tar xvf nc_shape.tar.gz</code></pre>
 <p>Covert Shapefile to GeoJSON:</p>
 <pre><code>ogr2ogr -f GeoJSON -t_srs crs:84 nc_state.geojson ncshape/nc_state.shp</code></pre>
 <h3 id="web-page">Web page</h3>
-<p>Now create a file in a text editor with the following HTML code, name the file <code>index.html</code> and open this file in a web browser:</p>
+<p>Now create a file in a text editor with the following HTML code, name the file <code>index.html</code> and open this file in a web browser (the page will be empty):</p>
 <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
@@ -83,7 +83,7 @@ tar xvf nc_shape.tar.gz</code></pre>
     zoom: 2
   })
 });</code></pre>
-<p>Now would be the time to reload the page in the web browser. After that we can add code to load our GeoJSON file before the code for OpenStreetMap:</p>
+<p>Now would be the time to reload the page in the web browser (usually Ctrl+R). If you don't see anything or something else is not right, you may want to explore developer tools in your web browser (see below). Than we can add code to load our GeoJSON file before the code for OpenStreetMap:</p>
 <pre><code>var vectorSource = new ol.source.Vector({
   format: new ol.format.GeoJSON(),
   url: &#39;nc_state.geojson&#39;,
@@ -99,8 +99,7 @@ var vectorLayer = new ol.layer.Vector({
         source: new ol.source.OSM()
       }),
       vectorLayer
-    ],
-    ...</code></pre>
+    ],</code></pre>
 <p>Now you can look again in the web browser and you should see the borders of North Carolina as a separate layer.</p>
 <p>If you don't see it the reason might error in your JavaScript code or the reason might be same-origin policy in you web browser. You can tell the difference by starting developer tools in your web browser and looking at messages in the console or log (e.g. in Firefox, Tools -&gt; Web Developer -&gt; Toggle Tools -&gt; Console). Firefox <a href="https://developer.mozilla.org/en-US/docs/Same-origin_policy_for_file:_URIs">policy</a> allows for a local file in the same directory to be loaded, so you should be good to go when using Firefox. However, Chrome and Chromium require a special command line option (replace <code>chromium-browser</code> by <code>chrome</code> or path to it if needed):</p>
 <pre><code>chromium-browser --disable-web-security --user-data-dir</code></pre>
@@ -157,8 +156,7 @@ var rasterLayer = new ol.layer.Image({
       }),
       rasterLayer,
       vectorLayer
-    ],
-    ...</code></pre>
+    ],</code></pre>
 <p>See the complete web page <a href="../resources/openlayers_raster_and_vector.html">here</a> and compare it with yours (you can see the code of the page in your web browsers; usually using Ctrl+U).</p>
 <h3 id="publishing-with-github">Publishing with GitHub</h3>
 <p>Now we will publish the web page using GitHub, specifically GitHub Pages service which can be activated for any Git repository on GitHub.</p>
