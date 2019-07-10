@@ -86,8 +86,11 @@ file lakes.png</code></pre>
 <pre><code>#!/bin/bash
 
 gdal_translate -of PNG -scale -co worldfile=yes $1 $2</code></pre>
+<p>To make the script executable, run the following <em>chmod</em> command which adds the executable permissions:</p>
+<pre><code>chmod u+x tif2png.sh</code></pre>
 <p>This script can be used in the following way:</p>
 <pre><code>./tif2png.sh lakes.tif lakes.png</code></pre>
+<p>The <code>./</code> part or whatever directory path the script is on is still necessary because the script is not in the directory specified by the <code>PATH</code> variable, i.e. it is not on path. This is perfectly fine and usually desired for scripts.</p>
 <h3 id="resampling-and-animation">Resampling and animation</h3>
 <p>The <em>gdalwarp</em> is a powerful tool for reprojection and other transformations. We will use it for resampling into lower resolution using <code>average</code> method:</p>
 <pre><code>gdalwarp -tr 300 300 -r average -co &quot;TFW=YES&quot; -overwrite ncrast/elev_ned_30m.tif srtm_300.tif</code></pre>
